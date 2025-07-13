@@ -1,6 +1,5 @@
 # 🏗️ 3‑Tier Web Application on AWS
 
-
 ## Table of Contents 📘
 
 - [Solution Overview](#solution-overview)  
@@ -22,7 +21,7 @@
 ## Solution Overview ✨
 
 This repository illustrates how to manually provision a **highly available**, **scalable**, and **secure 3‑tier web application** on AWS using the AWS Console or CLI.  
-Ideal for learning cloud architecture, auditing infrastructure, or environments where scripted automation isn't used.
+Ideal for hands-on learning, audit transparency, or environments where scripted automation isn’t used.
 
 ---
 
@@ -39,34 +38,35 @@ Below is the high-level architecture deployed across two Availability Zones:
 ### Networking 🚦
 - VPC with two **public** and two **private** subnets  
 - **Internet Gateway** for inbound traffic  
-- **NAT Gateways** for secure egress  
+- **NAT Gateways** (one per AZ) for private-tier internet access  
+  - ⚠️ **Important:** Each **public NAT Gateway** requires an **Elastic IP (EIP)** to function—this ensures a static, routable IP address for outbound traffic  [oai_citation:0‡docs.aws.amazon.com](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html?utm_source=chatgpt.com) [oai_citation:1‡serverfault.com](https://serverfault.com/questions/958663/aws-nat-gateway-using-a-non-elastic-ip-address?utm_source=chatgpt.com) [oai_citation:2‡stackoverflow.com](https://stackoverflow.com/questions/43094786/why-does-a-aws-nat-gateway-require-an-elasticip?utm_source=chatgpt.com) [oai_citation:3‡docs.aws.amazon.com](https://docs.aws.amazon.com/vpc/latest/userguide/nat-gateway-scenarios.html?utm_source=chatgpt.com)  
 - Custom **Route Tables** ensuring proper routing
 
 ### Security 🔒
-- **Security Groups** segmented for frontend, backend, and database  
-- **WAF** protections at edge (CloudFront) and application layers  
-- **IAM Roles** with least-privilege access for EC2
+- Security groups for frontend, backend, and database tiers  
+- WAF protection at both edge and application layers  
+- IAM roles assigned to EC2 instances for least-privilege operations
 
 ### Frontend Tier 🌐
-- Public EC2 instances running NGINX  
-- **Auto Scaling Group** for capacity management  
-- **Internet-facing ALB** to distribute traffic  
-- **CloudFront** for caching, edge delivery, and DDoS protection
+- EC2 instances (running NGINX) in public subnets  
+- Auto Scaling Group for dynamic scaling  
+- Internet-facing Load Balancer distributes user traffic  
+- CloudFront provides caching, edge delivery, and DDoS protection
 
 ### Backend Tier ⚙️
-- Private EC2 instances serving application/API  
-- **Internal Load Balancer** for service-to-service traffic  
-- Secure communication with frontend and database tiers
+- EC2 application/API servers in private subnets  
+- Internal Load Balancer manages inter-service traffic  
+- Secure and private communication with frontend and database tiers
 
 ### Database Tier 🗄️
-- **Amazon RDS** (PostgreSQL/MySQL) in Multi‑AZ setup  
-- Automated backups, snapshots, and failover  
-- Access restricted to backend instances only
+- Amazon RDS (PostgreSQL/MySQL) in Multi‑AZ private subnets  
+- Automated backups, snapshots, and failover functionality  
+- Database access restricted only to backend tier
 
 ### Monitoring & Logging 📊
-- **Amazon CloudWatch** collects metrics and logs  
-- Alarms monitor unhealthy instances or thresholds  
-- Optional **SNS** integration for alerts
+- Amazon CloudWatch collects metrics and logs  
+- Alarms alert on unhealthy instances or threshold breaches  
+- Optional SNS integration for notifications
 
 ---
 
@@ -83,30 +83,28 @@ Below is the high-level architecture deployed across two Availability Zones:
 
 ## Use Cases & Benefits 💡
 
-- **Hands-on learning** of AWS infrastructure  
-- **Audit-friendly** transparent provisioning  
-- **Production-grade template** for web/API apps  
-- **Cost-conscious**, leveraging AWS free-tier
+- Hands-on AWS infrastructure learning  
+- Audit-friendly manual provisioning  
+- Production-grade template for web/API apps  
+- Cost-effective, using AWS free-tier resources
 
 ---
 
 ## Customization 🔧
 
-- Swap backend EC2 with **ECS/EKS**  
-- Add caching layer: **Redis**, **Memcached**  
-- Integrate **CI/CD pipelines** with CodeDeploy/GitHub Actions  
-- Export to **CloudFormation** for automation  
-- Enhance with **VPC Flow Logs**, advanced **CloudWatch dashboards**, or **AWS X-Ray**
+- Swap EC2 backend for ECS or EKS  
+- Add caching layer with Redis or Memcached  
+- Introduce CI/CD pipelines (CodeDeploy, CodePipeline, etc.)  
+- Export this setup to CloudFormation  
+- Enhance with VPC Flow Logs, advanced dashboards, or X-Ray
 
 ---
 
 ## Cleanup 🧹
 
-To avoid ongoing costs, delete resources in this order:
-
-1. CloudFront  
-2. Load Balancers  
-3. EC2 Auto Scaling Groups  
-4. RDS instance  
-5. NAT Gateways & VPC  
-6. CloudWatch logs and alarms
+1. Delete CloudFront distribution  
+2. Tear down load balancers (frontend & backend)  
+3. Remove EC2 Auto Scaling Groups and templates  
+4. Delete RDS instance  
+5. Remove NAT Gateways, route tables, and VPC  
+6. Clean up CloudWatch logs and alarms
