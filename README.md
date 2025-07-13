@@ -39,7 +39,7 @@ Below is the high-level architecture deployed across two Availability Zones:
 - VPC with two **public** and two **private** subnets  
 - **Internet Gateway** for inbound traffic  
 - **NAT Gateways** (one per AZ) for private-tier internet access  
-  - ⚠️ **Important:** Each **public NAT Gateway** requires an **Elastic IP (EIP)** to function—this ensures a static, routable IP address for outbound traffic  [oai_citation:0‡docs.aws.amazon.com](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-nat-gateway.html?utm_source=chatgpt.com) [oai_citation:1‡serverfault.com](https://serverfault.com/questions/958663/aws-nat-gateway-using-a-non-elastic-ip-address?utm_source=chatgpt.com) [oai_citation:2‡stackoverflow.com](https://stackoverflow.com/questions/43094786/why-does-a-aws-nat-gateway-require-an-elasticip?utm_source=chatgpt.com) [oai_citation:3‡docs.aws.amazon.com](https://docs.aws.amazon.com/vpc/latest/userguide/nat-gateway-scenarios.html?utm_source=chatgpt.com)  
+  - ⚠️ **Important:** Each **public NAT Gateway** requires an **Elastic IP (EIP)** to function, ensuring a static and routable IP address for outbound internet traffic.
 - Custom **Route Tables** ensuring proper routing
 
 ### Security 🔒
